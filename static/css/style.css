@@ -1,0 +1,9 @@
+nav {
+  background: #002fff;
+  background: linear-gradient(176deg, rgb(0, 47, 255) 0%, rgb(87, 93, 199) 50%, rgb(155, 83, 237) 100%);
+}
+nav .nav-link {
+  font-family: "DM Mono";
+}
+
+/*# sourceMappingURL=style.css.map */
