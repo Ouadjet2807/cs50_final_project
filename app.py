@@ -1,8 +1,8 @@
 from flask import Flask, render_template, flash, redirect, request, session
 from flask_session import Session
+from helpers import login_required
 
 app = Flask(__name__)
-
 
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
@@ -18,6 +18,7 @@ def after_request(response):
 
 
 @app.route("/", methods=["GET", "POST"]) 
+@login_required
 def index():
     """Get Home page"""
 
@@ -42,3 +43,14 @@ def login():
     
 
     return render_template("login.html")
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    """Allow user to register"""
+
+    if request.method == "POST":
+        return redirect("/")
+    
+
+    return render_template("register.html")

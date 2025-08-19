@@ -6,4 +6,15 @@ nav .nav-link {
   font-family: "DM Mono";
 }
 
+.main {
+  padding: 100px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+}
+
 /*# sourceMappingURL=style.css.map */
