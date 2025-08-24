@@ -1,0 +1,137 @@
+$font1: "DM Mono";
+$font2: "Inter";
+
+$blue: #002fff;
+$purple: #7a5dff;
+$white: #e3e3e3;
+
+nav {
+  background: $blue;
+  background: linear-gradient(0deg, $blue 0%, $purple 100%);
+
+  .nav-link {
+    font-family: $font1;
+  }
+
+  .dropdown-menu {
+    margin-left: -7vw;
+
+    li {
+      .dropdown-item {
+        transition: 0.3s ease-in;
+        color: $purple;
+
+        &:hover {
+          color: $white;
+          background: $purple;
+        }
+      }
+    }
+  }
+}
+
+.main {
+  padding: 100px;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 20px 0;
+  }
+
+  #create_list_form {
+    textarea {
+      resize: none;
+    }
+
+    .cards-group {
+      .card {
+        font-family: $font1;
+
+        .card-header {
+          // background: linear-gradient(0deg, rgb(46 84 255) 0%, rgb(122 93 255) 100%);
+          border-bottom: 2px solid $blue;
+
+          .card-title {
+            color: $blue;
+          }
+
+          .delete-card {
+            width: 30px;
+            height: 30px;
+            border: 1.5px solid $blue;
+            color: $blue;
+            transition: 0.3s ease-in;
+
+            &:hover {
+              background: #002fff49;
+            }
+          }
+        }
+
+        label {
+          text-transform: uppercase;
+          font-size: small;
+          color: $blue;
+        }
+      }
+    }
+
+    .btn.add-card {
+      color: $blue;
+      border: 2px solid $blue;
+      transition: 0.3s ease-in;
+
+      &:hover {
+        background: transparent;
+        box-shadow: 0px 0px 20px -5px $blue;
+      }
+    }
+
+    .create-list-btn {
+      background: $blue;
+      color: $white;
+      transition: 0.3s ease-in;
+
+      &:hover {
+        background: white;
+        box-shadow: 0px 0px 20px -5px $blue;
+        border: 2px solid $blue;
+        color: $blue;
+      }
+    }
+  }
+
+  #folders {
+
+    .folders-list {
+      
+      .folder {
+        cursor: pointer;
+        gap: 10px;
+        
+        i {
+          font-size: 3vw;
+          color: $blue;
+        }
+      }
+    }
+  }
+
+  #list_container {
+
+    .cards {
+
+      .card {
+        height: 20vw;
+        width: 40vw;
+      }
+    }
+
+    .actions {
+        gap: 15px;
+    }
+
+  }
+}

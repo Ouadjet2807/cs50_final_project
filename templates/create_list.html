@@ -1,0 +1,147 @@
+{% extends "layout.html" %} {% block main %}
+
+<div class="container w-75 mx-auto">
+  <h2>Create a new list</h2>
+  <form action="/create_list" method="post" id="create_list_form" class="align-items-end">
+    <div class="cards_number_tracker">
+    </div>
+    <div class="list w-100">
+      <input
+        type="text"
+        class="form-control rounded-2"
+        name="title"
+        placeholder="Title"
+      />
+      <textarea
+        name="description"
+        id=""
+        class="form-control rounded-2 my-2"
+        rows="3"
+        placeholder="Add a description"
+      ></textarea>
+    </div>
+    <div class="cards-group w-100"></div>
+
+    <button class="btn add-card w-auto mx-auto rounded-pill border-2" type="button">Add one card</button>
+
+    <button type="submit" class="btn create-list-btn w-25 mt-5 rounded-pill border-2 float-end">Create list</button>
+  </form>
+</div>
+
+{% endblock %} {% block script %}
+<script>
+  let cards = [
+    {
+      term: "",
+      definition: "",
+    },
+    {
+      term: "",
+      definition: "",
+    },
+  ];
+
+  let cardsGroupContent = ``;
+  const addCardButton = document.querySelector(".add-card");
+
+  const cardsGroup = document.querySelector(".cards-group");
+
+  const cardsNumberTracker = document.querySelector(".cards_number_tracker");
+
+  let termInputs = document.querySelectorAll(".term-input");
+  let definitionInputs = document.querySelectorAll(".definition-input");
+
+  const checkInput = () => {
+    termInputs = document.querySelectorAll(".term-input");
+    definitionInputs = document.querySelectorAll(".definition-input");
+
+    termInputs.forEach((termInput, i) => {
+
+      termInput.addEventListener("keyup", (e) => {
+        cards[i].term = termInput.value;
+
+        console.log(cards);
+      });
+    });
+
+    definitionInputs.forEach((definitionInput, i) => {
+
+      definitionInput.addEventListener("keyup", (e) => {
+        cards[i].definition = definitionInput.value;
+
+        console.log(cards);
+      });
+    });
+  };
+
+  const renderCards = () => {
+    cardsGroup.innerHTML = "";
+
+    cards.forEach((card, i) => {
+      const index = i + 1;
+
+      const cardHTML = `
+      <div class="card rounded-4 my-4" id="card_${index}">
+        <div class="card-header d-flex justify-content-between rounded-top-4  pt-3 pb-4 px-3">
+          <div class="card-title card-number"><h4">${index}</h4></div>
+          <button class="btn btn-outline-light delete-card rounded-circle py-0 px-1" data-index="${i}">
+            <i class="fa-solid fa-trash-can d-flex align-center justify-content-center"></i>
+          </button>
+        </div>
+        <div class="container px-3">
+          <div class="inputs row py-4">
+            <div class="form-group col d-inline-flex flex-column">
+              <input type="text" class="form-control term-input rounded-2 w-100"
+                     name="term_card_${index}" value="${card.term}" />
+              <label for="term" class="mt-1">Term</label>
+            </div>
+            <div class="form-group col d-inline-flex flex-column">
+              <input type="text" class="form-control definition-input rounded-2 w-100"
+                     name="definition_card_${index}" value="${card.definition}" />
+              <label for="definition" class="mt-1">Definition</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+      cardsGroup.insertAdjacentHTML("beforeend", cardHTML);
+    });
+
+    cardsNumberTracker.innerHTML = `<input type="hidden" name="cards-number" value="${cards.length}">`;
+    checkInput();
+  };
+
+  const checkCardsListLength = () => {
+      
+      if(cards.length <= 2) {
+          const deleteButtons = document.querySelectorAll(".delete-card")
+          
+          deleteButtons.forEach(button => {
+              button.setAttribute("disabled", "");
+            })
+        }
+    }
+
+  cardsGroup.addEventListener("click", (e) => {
+    const btn = e.target.closest(".delete-card");
+    if (!btn) return;
+
+    const index = parseInt(btn.dataset.index, 10);
+    cards.splice(index, 1);
+    renderCards();
+    checkCardsListLength()
+  });
+
+  addCardButton.addEventListener("click", () => {
+
+    cards.push({ term: "", definition: "" });
+    renderCards();
+    checkCardsListLength()
+  });
+
+  renderCards();
+  checkInput();
+  checkCardsListLength()
+
+</script>
+{% endblock %}

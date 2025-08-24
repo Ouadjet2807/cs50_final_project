@@ -1,9 +1,17 @@
-{% extends "layout.html" %}
+{% extends "layout.html" %} {% block title %} Home {% endblock %} {% block main
+%}
 
-    {% block title %}
-        Home
-    {% endblock %}
-
-{% block main %}
+<div class="container" id="folders">
+    <div class="folders-list d-flex flex-column">
+        {% for folder in folders %}
+        <div class="folder d-flex rounded-4 bg-light mx-auto my-2 px-3 py-3 w-75 align-items-center">
+            <a href="{{ url_for('show_folder', username=username, folder_path=folder.path) }}">
+                <i class="fa-solid fa-folder"></i>
+                <h4>{{folder.name}}</h4>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 
 {% endblock %}

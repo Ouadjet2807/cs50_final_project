@@ -1,0 +1,194 @@
+{% extends 'layout.html' %}
+
+{% block main %}
+
+    <div class="container" id="list_container">
+        <div class="container-header">
+            <h3>{{list.title}}</h3>
+        </div>
+
+        <div class="cards">
+
+        </div>
+        <div class="actions w0-auto my-4 d-flex justify-content-center align-items-center">
+                   <button id="previous_button" class="btn previous"><i class="bi bi-arrow-left-circle-fill"></i></button>
+                   <div class="progression">
+
+                   </div>
+                   <button id="next_button" class="btn next"><i class="bi bi-arrow-right-circle-fill"></i></button>
+        </div>
+        <div class="terms">
+            {% for card in list.cards %}
+                <div class="term" id="card_{{card.id}}" data-username="{{username}}" data-list-path="{{list.path}}" data-list-id="{{list.id}}" data-card-id="{{card.id}}">
+                    <span>{{card.term}}</span>
+                    <span>{{card.definition}}</span>
+                    <button class="edit-button">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+{% endblock %}
+
+{% block script %}
+
+<script>
+
+    const cardsList= {{ list.cards | tojson | safe }};
+
+    const cardsContainer = document.querySelector(".cards")
+
+    const progression = document.querySelector(".progression")
+
+    const cardsNumber = cardsList.length
+
+    let cardCounter = 0
+    let card = ''
+
+    const renderCards = () => {
+        html = `<div class="card card_${cardsList[cardCounter].id} mx-auto mt-4 d-flex flex-column justify-content-center align-items-center" data-term="${cardsList[cardCounter].term}" data-definition="${cardsList[cardCounter].definition}">
+                    <h4 class="card-title">${cardsList[cardCounter].term}</h4>
+               </div>   
+                `
+
+
+        cardsContainer.innerHTML = html
+        progression.innerHTML = `${cardCounter + 1}/${cardsNumber}`
+        card = document.querySelector(".card")
+
+        cardsContainer.firstChild.addEventListener("click", () => {
+        console.log("click")
+        
+        flipped = !flipped
+
+        gsap.fromTo(".card", {
+            duration: 0.5,
+            rotateX: 0,
+        },
+        {
+            duration: 0.5,
+            rotateX: 180,
+        },
+        )
+
+        if(flipped) {
+            card.innerHTML = `<h4 class="card-title">${card.dataset.definition}</h4>`
+        } else {
+            card.innerHTML = `<h4 class="card-title">${card.dataset.term}</h4>`
+        }
+
+        gsap.to(".card .card-title", {
+            duration: 0.5,
+            rotateX: 180,
+        })
+
+        
+    })
+
+
+
+    }
+
+    renderCards()
+
+    const terms = document.querySelectorAll(".term")
+    const previousButton = document.getElementById("previous_button")
+    const nextButton = document.getElementById("next_button")
+    
+    let editMode = false
+    
+    const checkButtons = () => {
+        if(cardCounter == 0) {
+            previousButton.setAttribute("disabled", "")
+            nextButton.removeAttribute("disabled")
+        } else if(cardCounter == (cardsNumber - 1)) {
+            nextButton.setAttribute("disabled", "")
+            previousButton.removeAttribute("disabled")
+        } else {
+            nextButton.removeAttribute("disabled")
+            previousButton.removeAttribute("disabled")
+
+        }
+
+    }
+
+    previousButton.addEventListener("click", () => {
+        if(cardCounter > 0) {
+            cardCounter--
+        }
+
+        gsap.fromTo(".card", {
+            x: -135,
+            rotateY: -70,
+        },
+        {
+            x: 0,
+            rotateY: 0,
+        })
+      renderCards()
+      checkButtons()
+    })
+
+    nextButton.addEventListener("click", () => {
+        if(cardCounter < (cardsNumber - 1)) {
+            cardCounter++
+        }
+
+        console.log(cardCounter)
+        gsap.fromTo(".card", {
+            x: 135,
+            rotateY: 70,
+        },
+        {
+            x: 0,
+            rotateY: 0,
+        })
+      renderCards()
+      checkButtons()
+    })
+
+    let flipped = false
+
+    
+
+    terms.forEach(term => {
+        term.children[2].addEventListener("click", async () => {
+
+            editMode = !editMode
+         
+            username = term.dataset.username
+            list_path = term.dataset.listPath
+            list_id = term.dataset.listId
+            card_id = term.dataset.cardId
+            term_value = term.children[0].innerHTML
+            definition_value = term.children[1].innerHTML
+
+            console.log(username)
+            console.log(list_path)
+
+            html = `<form action="/update_card" method="post">
+
+                <input type="hidden" name="username" value="${username}">
+                <input type="hidden" name="list_path" value="${list_path}">
+                <input type="hidden" name="list_id" value="${list_id}">
+                <input type="hidden" name="card_id" value="${card_id}">
+                <input type="text" name="new_term" value="${term_value}">
+                <input type="text" name="new_definition" value="${definition_value}">
+                <button class="edit-button" type="submit">
+                    <i class="bi bi-pencil"></i>
+                </button>
+            </form>
+            `
+           
+            
+            term.innerHTML = html
+        })
+    })
+
+
+    checkButtons()
+</script>
+    
+{% endblock %}

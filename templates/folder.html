@@ -1,0 +1,201 @@
+{% extends 'layout.html' %}
+
+
+{% block main %}
+
+<div class="container">
+    <div class="header d-flex justify-content-between py-5">
+        <h2>{{folder.name}}</h2>
+
+        <button class="rounded-circle" data-bs-toggle="modal" data-bs-target="#contentModal"">
+            <i class="bi bi-plus"></i>
+        </button>
+    </div>
+</div>
+
+  <div class="folder_lists">
+            {% for list in folder_lists %}
+                <div class="list bg-light d-flex justify-content-between align-items-center rounded-4 py-3 px-4">
+                <a href="{{ url_for('show_list', username=username, list_path=list.path) }}">
+
+                    <div class="information">
+                      <h4>
+                        {{list.title}}
+                      </h4>
+                      <span>List • </span>  
+                      <span>{{list.cards | length}} terms</span>
+                    </div>
+                    <div class="options dropdown">
+                      <i class="fa-solid fa-ellipsis" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                      <ul class="dropdown-menu">
+                        <li><button id="{{list.id}}_add_keywords" value={{list.keywords}} class="dropdown-item add-keywords" data-list-id="{{ list.id }}" data-bs-toggle="modal" data-bs-target="#keywordsModal"">Add or delete keywords</a></li>
+                          <li><form class="dropdown-item" action="/remove_from_folder" method="post">
+                            <input type="hidden" name="list_id" value={{list.id}}>
+                            <input type="hidden" name="folder_id" value={{folder.id}}>
+                            <button>
+                              Remove from folder
+                            </button>
+                          </form>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </a>
+                 <div
+      class="modal fade"
+      id="keywordsModal"
+      aria-labelledby="keywordsModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title"><i class="bi bi-plus"></i> Add or delete keywords</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="modal-body" id="add_keywords_modal_body">
+          <button class="" data-bs-toggle="modal" data-bs-target="#createKeywordsModal"">
+            <i class="bi bi-plus"></i>
+           </button>
+           <div class="keywords">
+              {% for keyword in list.keywords %}
+               <label for="">
+                 <input class="keywordInput" type="checkbox" {% if keyword.active %} checked {% endif %} name="keyword" data-list-id="{{ list.id }}" 
+      data-keyword-id="{{ keyword.id }}" value={{keyword.active}} id="">{{keyword.keyword}}</label>
+
+              {% endfor %}
+            </div>
+           
+           </div>
+          </div>
+        </div>
+      </div>
+    </div>
+            {% endfor %}
+          </div>
+ <div
+      class="modal fade"
+      id="contentModal"
+      aria-labelledby="contentModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title"><i class="bi bi-folder2"></i> Create folder</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+           <div class="lists">
+            {% for list in all_lists %}
+                <div class="list d-flex justify-content-between align-items-center px-3">
+                  <span>{{list.title}}</span>
+    
+                        <form action="/add_to_folder" method="post">
+                            <input type="hidden" name="folder_id" value="{{folder.id}}">
+                            <input type="hidden" name="list_id" value="{{list.id}}">
+                            <button type="submit" class="rounded-circle">
+                                <i class="bi bi-plus"></i>
+                            </button>
+                        </form>
+               
+            </div>
+            {% endfor %}
+           </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+ <div
+      class="modal fade"
+      id="createKeywordsModal"
+      aria-labelledby="createKeywordsModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title"><i class="bi bi-plus"></i> New keyword</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="modal-body" id="create_keywords_modal_body">
+           
+          
+           </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  
+{% endblock %}
+
+{% block script %}
+
+<script>
+
+  const addKeywordsButton = document.querySelector(".add-keywords") 
+  const addKeywordsModal = document.getElementById("add_keywords_modal_body")
+  const createKeywordsModal = document.getElementById("create_keywords_modal_body")
+  const keywordInputs = document.querySelectorAll(".keywordInput")
+
+  const listKeywords = addKeywordsButton.value
+
+  const listId = addKeywordsButton.dataset.listId
+
+  createKeywordsModal.innerHTML = `
+                              <form action="/create_keyword" method="post">
+                                <input type="hidden" class="form-control" name="list_id" value=${listId}>
+                                <input type="text" autocomplete="off" class="form-control" name="keyword" placeholder="Keyword">
+                                <button type="submit" class="btn">Add</button>
+                              </form>
+                              `
+
+  keywordInputs.forEach(checkbox => {
+    checkbox.addEventListener("change", async () => {
+        const listId = checkbox.dataset.listId; 
+        const keywordId = checkbox.dataset.keywordId;
+        const active = checkbox.checked;
+
+
+       try {
+        await fetch("/update_keyword_status", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            list_id: listId,
+            keyword_id: keywordId,
+            active: active
+          })
+        });
+        console.log("fetch")
+      } catch (err) {
+        console.error("Error updating keyword:", err);
+      }
+    })
+  })
+</script>
+
+
+{% endblock %}

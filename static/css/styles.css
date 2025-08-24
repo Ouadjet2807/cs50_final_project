@@ -1,0 +1,92 @@
+nav {
+  background: #002fff;
+  background: linear-gradient(0deg, #002fff 0%, #7a5dff 100%);
+}
+nav .nav-link {
+  font-family: "DM Mono";
+}
+nav .dropdown-menu {
+  margin-left: -7vw;
+}
+nav .dropdown-menu li .dropdown-item {
+  transition: 0.3s ease-in;
+  color: #7a5dff;
+}
+nav .dropdown-menu li .dropdown-item:hover {
+  color: #e3e3e3;
+  background: #7a5dff;
+}
+
+.main {
+  padding: 100px;
+}
+.main form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+}
+.main #create_list_form textarea {
+  resize: none;
+}
+.main #create_list_form .cards-group .card {
+  font-family: "DM Mono";
+}
+.main #create_list_form .cards-group .card .card-header {
+  border-bottom: 2px solid #002fff;
+}
+.main #create_list_form .cards-group .card .card-header .card-title {
+  color: #002fff;
+}
+.main #create_list_form .cards-group .card .card-header .delete-card {
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid #002fff;
+  color: #002fff;
+  transition: 0.3s ease-in;
+}
+.main #create_list_form .cards-group .card .card-header .delete-card:hover {
+  background: rgba(0, 47, 255, 0.2862745098);
+}
+.main #create_list_form .cards-group .card label {
+  text-transform: uppercase;
+  font-size: small;
+  color: #002fff;
+}
+.main #create_list_form .btn.add-card {
+  color: #002fff;
+  border: 2px solid #002fff;
+  transition: 0.3s ease-in;
+}
+.main #create_list_form .btn.add-card:hover {
+  background: transparent;
+  box-shadow: 0px 0px 20px -5px #002fff;
+}
+.main #create_list_form .create-list-btn {
+  background: #002fff;
+  color: #e3e3e3;
+  transition: 0.3s ease-in;
+}
+.main #create_list_form .create-list-btn:hover {
+  background: white;
+  box-shadow: 0px 0px 20px -5px #002fff;
+  border: 2px solid #002fff;
+  color: #002fff;
+}
+.main #folders .folders-list .folder {
+  cursor: pointer;
+  gap: 10px;
+}
+.main #folders .folders-list .folder i {
+  font-size: 3vw;
+  color: #002fff;
+}
+.main #list_container .cards .card {
+  height: 20vw;
+  width: 40vw;
+}
+.main #list_container .actions {
+  gap: 15px;
+}
+
+/*# sourceMappingURL=styles.css.map */
